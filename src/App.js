@@ -4,11 +4,19 @@ import WeatherDisplay from './components/WeatherDisplay';
 import ForecastDisplay from './components/ForecastDisplay';
 import { Cloud, Loader2 } from 'lucide-react';
 
-const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
+const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY || '116e872c51957c46606942f6a9cb9a65';
 const API_BASE = 'https://api.openweathermap.org/data/2.5';
 const GEO_API_BASE = 'https://api.openweathermap.org/geo/1.0';
 
 const App = () => {
+    // Check if API key is loaded
+    useEffect(() => {
+        if (!API_KEY) {
+            console.error('API key not found. Please check your .env file.');
+        } else {
+            console.log('API key loaded successfully');
+        }
+    }, []);
     const [city, setCity] = useState('');
     const [weather, setWeather] = useState(null);
     const [forecast, setForecast] = useState([]);
@@ -33,6 +41,12 @@ const App = () => {
             return;
         }
 
+        if (!API_KEY) {
+            console.error('API key not available for geocoding');
+            setSuggestions([]);
+            return;
+        }
+
         try {
             const response = await fetch(
                 `${GEO_API_BASE}/direct?q=${encodeURIComponent(query)}&limit=5&appid=${API_KEY}`
@@ -41,6 +55,9 @@ const App = () => {
             if (response.ok) {
                 const data = await response.json();
                 setSuggestions(data);
+            } else {
+                console.error('Geocoding API error:', response.status);
+                setSuggestions([]);
             }
         } catch (err) {
             console.error('Error fetching location suggestions:', err);
@@ -75,6 +92,11 @@ const App = () => {
     const fetchWeather = async (cityName) => {
         if (!cityName.trim()) return;
 
+        if (!API_KEY) {
+            setError('API key not configured. Please check your .env file.');
+            return;
+        }
+
         setLoading(true);
         setError('');
 
@@ -85,7 +107,9 @@ const App = () => {
             );
 
             if (!weatherRes.ok) {
-                throw new Error('City not found. Please check the spelling and try again.');
+                const errorData = await weatherRes.json();
+                console.error('API Error:', errorData);
+                throw new Error(errorData.message || 'City not found. Please check the spelling and try again.');
             }
 
             const weatherData = await weatherRes.json();

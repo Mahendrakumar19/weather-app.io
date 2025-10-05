@@ -4,7 +4,7 @@ import WeatherDisplay from './components/WeatherDisplay';
 import ForecastDisplay from './components/ForecastDisplay';
 import { Cloud, Loader2 } from 'lucide-react';
 
-const API_KEY = '116e872c51957c46606942f6a9cb9a65'; // Replace with your OpenWeatherMap API key
+const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
 const API_BASE = 'https://api.openweathermap.org/data/2.5';
 const GEO_API_BASE = 'https://api.openweathermap.org/geo/1.0';
 

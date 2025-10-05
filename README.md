@@ -24,9 +24,15 @@ A clean and simple single-page React application to display weather information 
    - Sign up for a free account
    - Generate an API key
 
-3. **Add API Key**
-   - Open `src/App.js`
-   - Replace `YOUR_API_KEY_HERE` with your actual API key
+3. **Setup Environment Variables**
+   - Copy `.env.example` to `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Open `.env` file and replace `your_api_key_here` with your actual API key:
+     ```
+     REACT_APP_OPENWEATHER_API_KEY=your_actual_api_key_here
+     ```
 
 4. **Run the Application**
    ```bash
